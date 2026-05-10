@@ -130,18 +130,19 @@
 					<argLine>@{argLine} -Dnet.bytebuddy.experimental=true -XX:+EnableDynamicAgentLoading</argLine>
 				</configuration>
 			</plugin>
-			<plugin> 
-              <groupId>org.owasp</groupId> 
-              <artifactId>dependency-check-maven</artifactId> 
-              <version>12.1.1</version> 
-              <executions> 
-                  <execution> 
-                      <goals> 
-                          <goal>check</goal> 
-                      </goals> 
-                  </execution> 
-              </executions> 
-            </plugin>
+			<plugin>
+				<groupId>org.owasp</groupId>
+				<artifactId>dependency-check-maven</artifactId>
+				<version>12.1.1</version>
+				<executions>
+					<execution>
+						<phase>verify</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
