@@ -91,6 +91,25 @@
     		<artifactId>jacoco-maven-plugin</artifactId>
     		<version>0.8.13</version>
 		</dependency>
+		<!-- Forzamos Byte Buddy 1.17.x para soportar Java 25 (Mockito trae 1.15.x) -->
+		<dependency>
+			<groupId>net.bytebuddy</groupId>
+			<artifactId>byte-buddy</artifactId>
+			<version>1.17.5</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.bytebuddy</groupId>
+			<artifactId>byte-buddy-agent</artifactId>
+			<version>1.17.5</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- H2 en memoria para tests de integración: evita necesitar MySQL externo -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>test</scope>
+		</dependency>
 		
 	</dependencies>
 
@@ -99,6 +118,17 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<!--
+				Surefire: combinamos el argLine de JaCoCo (@{argLine}) con la propiedad
+				net.bytebuddy.experimental para que Mockito/Byte Buddy funcione con Java 25.
+			-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<argLine>@{argLine} -Dnet.bytebuddy.experimental=true -XX:+EnableDynamicAgentLoading</argLine>
+				</configuration>
 			</plugin>
 			<plugin> 
               <groupId>org.owasp</groupId> 
@@ -125,6 +155,7 @@
 					</execution>
 					<execution>
 						<id>default-report</id>
+						<phase>test</phase>
 						<goals>
 							<goal>report</goal>
 						</goals>
