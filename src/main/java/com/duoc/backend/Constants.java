@@ -1,10 +1,14 @@
 package com.duoc.backend;
+
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 
+@Component
 public class Constants {
 
     // Spring Security
@@ -14,16 +18,18 @@ public class Constants {
 
     // JWT
     public static final String ISSUER_INFO = "https://www.duocuc.cl/";
-    public static final String SUPER_SECRET_KEY = "ZnJhc2VzbGFyZ2FzcGFyYWNvbG9jYXJjb21vY2xhdmVlbnVucHJvamVjdG9kZWVtZXBsb3BhcmFqd3Rjb25zcHJpbmdzZWN1cml0eQ==bWlwcnVlYmFkZWVqbXBsb3BhcmFiYXNlNjQ=";
     public static final long TOKEN_EXPIRATION_TIME = 864_000_000; // 1 day
 
-    public static Key getSigningKeyB64(String secret) {
-        byte[] keyBytes = Decoders.BASE64.decode(secret);
+    @Value("${app.security.jwt.secret}")
+    private String jwtSecret;
+
+    public Key getSigningKeyB64() {
+        byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public static Key getSigningKey(String secret) {
-        byte[] keyBytes = secret.getBytes(StandardCharsets.UTF_8);
+    public Key getSigningKey() {
+        byte[] keyBytes = jwtSecret.getBytes(StandardCharsets.UTF_8);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 

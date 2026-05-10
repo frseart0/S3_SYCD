@@ -11,9 +11,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.duoc.backend.Constants.*;
 @Configuration
 public class JWTAuthenticationConfig {
+
+    private final Constants constants;
+
+    public JWTAuthenticationConfig(Constants constants) {
+        this.constants = constants;
+    }
 
     public String getJWTToken(String username) {
         List<GrantedAuthority> grantedAuthorities = AuthorityUtils
@@ -33,7 +38,7 @@ public class JWTAuthenticationConfig {
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 1440))
                 .and()
-                .signWith(getSigningKey(SUPER_SECRET_KEY))
+                .signWith(constants.getSigningKey())
                 .compact();
 
         return "Bearer " + token;

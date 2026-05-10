@@ -17,10 +17,17 @@ import java.util.stream.Collectors;
 
 import javax.crypto.SecretKey;
 
-import static com.duoc.backend.Constants.*;
+import static com.duoc.backend.Constants.HEADER_AUTHORIZACION_KEY;
+import static com.duoc.backend.Constants.TOKEN_BEARER_PREFIX;
 
 @Component
 public class JWTAuthorizationFilter extends OncePerRequestFilter {
+
+    private final Constants constants;
+
+    public JWTAuthorizationFilter(Constants constants) {
+        this.constants = constants;
+    }
 
     private Claims setSigningKey(HttpServletRequest request) {
         String jwtToken = request.
@@ -28,7 +35,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
                 replace(TOKEN_BEARER_PREFIX, "");
 
                 return Jwts.parser()
-                .verifyWith((SecretKey) getSigningKey(SUPER_SECRET_KEY))
+                .verifyWith((SecretKey) constants.getSigningKey())
                 .build()
                 .parseSignedClaims(jwtToken)
                 .getPayload();
